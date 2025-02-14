@@ -27,10 +27,23 @@
 
 // ).listen(8080)
 
-
 const express = require('express')
+const { MongoClient } = require('mongodb');
 const calcu = require('./calculator')
 const app = express();
+
+const url = 'mongodb://localhost:27017';
+const client = new MongoClient(url);
+
+async function getData() {
+    await client.connect();
+    const db = client.db('9_to_11');
+    const collection = db.collection('user');
+    const data = await collection.find({}).toArray()
+    console.log(data);
+}
+getData()
+
 
 app.get('/add/:num1/:num2', (req, res) => {
     // const data = calcu.add(req.query.num1, req.query.num2)
