@@ -22,77 +22,102 @@
 //         } else if (reqURL.includes('/sub')) {
 //             res.write(sub(num1, num2))
 //         }
+
 //         res.end();
 //     }
 
 // ).listen(8080)
 
-const express = require('express')
-const { MongoClient, ObjectId } = require('mongodb');
-const calcu = require('./calculator')
-const app = express();
+// const express = require('express')
+// const { MongoClient, ObjectId } = require('mongodb');
+// const calcu = require('./calculator')
+const mongoose = require('mongoose');
+// const app = express();
 
-app.use(express.json());
-
-const url = 'mongodb://localhost:27017';
-const client = new MongoClient(url);
+// app.use(express.json());
 
 
-async function getData() {
-    await client.connect();
-    const db = client.db('9_to_11');
-    const collection = db.collection('user');
-    const data = await collection.find({}).toArray()
-    // console.log(data);
-    return data
+const main = async (req, res) => {
+    await mongoose.connect('mongodb://localhost:27017/Jeet');
+    // console.log(db);
+
+    const userSchema = new mongoose.Schema({
+        name: String,
+        email: String,
+        password: String,
+        mobile: Number
+    })
+
+    const MyModel = mongoose.model('User', userSchema);
+
+    const result = new MyModel({ name: "Jeet", email: "jeet@gmail.com", password: "Jeet@123", mobile: 9012345678 })
+    const data = await result.save();
+    // res.send(data)
+    console.log(data);
+
 }
 
-async function insertData(data) {
-    await client.connect();
-    const db = client.db('9_to_11');
-    const collection = db.collection('user');
-    const insertdata = await collection.insertOne(data)
-    // console.log(insertdata);
-    return insertdata
-}
+main();
 
-async function updateData(id, data) {
-    await client.connect();
-    const db = client.db('9_to_11');
-    const collection = db.collection('user');
-    const updatedata = await collection.updateOne({ _id: new ObjectId(id) }, { $set: data })
-    console.log(updatedata);
-    // return insertdata
-}
+// const url = 'mongodb://localhost:27017';
+// const client = new MongoClient(url);
 
-async function deleteData(id) {
-    await client.connect();
-    const db = client.db('9_to_11');
-    const collection = db.collection('user');
-    const deletedata = await collection.deleteOne({ _id: new ObjectId(id) })
-    console.log(deletedata);
-    // return insertdata
-}
 
-app.get('/getData', async (req, res) => {
-    const data = await getData()
-    res.send(data)
-})
+// async function getData() {
+//     await client.connect();
+//     const db = client.db('9_to_11');
+//     const collection = db.collection('user');
+//     const data = await collection.find({}).toArray()
+//     // console.log(data);
+//     return data
+// }
 
-app.post('/insertData', async (req, res) => {
-    const data = await insertData(req.body);
-    res.send(data)
-})
+// async function insertData(data) {
+//     await client.connect();
+//     const db = client.db('9_to_11');
+//     const collection = db.collection('user');
+//     const insertdata = await collection.insertOne(data)
+//     // console.log(insertdata);
+//     return insertdata
+// }
 
-app.put('/updateData/:id', async (req, res) => {
-    const data = await updateData(req.params.id, req.body);
-    res.send(data)
-});
+// async function updateData(id, data) {
+//     await client.connect();
+//     const db = client.db('9_to_11');
+//     const collection = db.collection('user');
+//     const updatedata = await collection.updateOne({ _id: new ObjectId(id) }, { $set: data })
+//     console.log(updatedata);
+//     // return insertdata
+// }
 
-app.delete('/deleteData/:id', async (req, res) => {
-    const data = await deleteData(req.params.id)
-    res.send(data)
-})
+// async function deleteData(id) {
+//     await client.connect();
+//     const db = client.db('9_to_11');
+//     const collection = db.collection('user');
+//     const deletedata = await collection.deleteOne({ _id: new ObjectId(id) })
+//     console.log(deletedata);
+//     // return insertdata
+// }
+
+// app.get('/getData', async (req, res) => {
+//     const data = await getData()
+//     res.send(data)
+// })
+
+// app.post('/insertData', async (req, res) => {
+//     const data = await insertData(req.body);
+//     res.send(data)
+// })
+
+// app.put('/updateData/:id', async (req, res) => {
+//     const data = await updateData(req.params.id, req.body);
+//     res.send(data)
+// });
+
+// app.delete('/deleteData/:id', async (req, res) => {
+//     const data = await deleteData(req.params.id)
+//     res.send(data)
+// })
 
 // app.get('/add/:num1/:num2', (req, res) => {
 //     // const data = calcu.add(req.query.num1, req.query.num2)
@@ -106,4 +131,4 @@ app.delete('/deleteData/:id', async (req, res) => {
 //     res.send(data)
 // })
 
-app.listen(8000)
+// app.listen(8000)
